@@ -6,10 +6,13 @@
 #define LED_2 (1 << PB1)
 #define LED_3 (1 << PB2)
 #define LED_4 (1 << PB4) // need to change this not to refer to MISO
+#define LED_4_OFF (0 << PB4)
 #define BUTT_SW1 (0 << PD2)
 #define BUTT_SW1_ON (1 << PD2)
 #define BUTT_SW2 (0 << PD4)
 #define BUTT_SW2_ON (1 << PD4)
+
+#define CHECK_BIT(var, pos) ((var) & (1<<(pos - 1)))
 
 int main(void) {
 	int counter = 0;
@@ -19,19 +22,16 @@ int main(void) {
 	while (1) {
 		if (!(PIND & BUTT_SW1_ON)) {
 			++counter;
-			counter = counter % 4;
-			if (counter == 1) {
-				PORTB = LED_1;
-			} else if (counter == 2) {
-				PORTB = LED_2;
-			} else if (counter == 3) {
-				PORTB = LED_3;
-			} else {
-				PORTB = LED_4;
-			}
-			// PORTB = LED_1 ^ LED_2 ^ LED_3 ^ LED_4; // turns on all
-			_delay_ms(300);
 		}
+		if (!(PIND & BUTT_SW2_ON)) {
+			--counter;
+		}
+		PORTB = counter;
+		PORTB = PORTB & ~(LED_4);
+		if (CHECK_BIT(counter, 4)) {
+			PORTB |= LED_4;
+		}
+		_delay_ms(275);
 	}
 	return 0;
 }
