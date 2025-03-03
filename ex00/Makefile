@@ -2,7 +2,7 @@
 
 MCU		= atmega168p
 F_CPU	= 8000000  
-BAUD	= 9600
+BAUD	= 115200
 
 # Compile args
 
@@ -21,7 +21,7 @@ hex:
 	$(OBJCOPY) -O ihex -R .eeprom $(BIN).bin $(BIN).hex
 
 flash:
-	$(INSTALL) -F -V -c arduino -p $(MCU) -P $(PORT) -b 115200 -U flash:w:$(BIN).hex
+	$(INSTALL) -F -V -c arduino -p $(MCU) -P $(PORT) -b $(BAUD) -U flash:w:$(BIN).hex
 
 all: hex flash
 
