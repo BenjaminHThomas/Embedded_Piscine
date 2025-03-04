@@ -10,7 +10,7 @@ BIN		= ex01
 CC		= avr-gcc
 OBJCOPY	= avr-objcopy
 INSTALL	= avrdude
-FLAGS	= -Wall -Werror -Wextra -O1
+FLAGS	= -Wall -Werror -Wextra
 FLAGS	+= -F_CPU=$(F_CPU) -mmcu=$(MCU)
 PORT	= /dev/ttyUSB0
 
@@ -25,9 +25,11 @@ hex:
 flash:
 	$(INSTALL) -F -V -c arduino -p $(MCU) -P $(PORT) -b $(BAUD) -U flash:w:$(BIN).hex
 
+tidyin: hex flash clean
+
 clean:
 	rm -f $(BIN).bin $(BIN).hex
 
 re: clean all
 
-.PHONY: all clean re hex flash
+.PHONY: all clean re hex flash tidyin
