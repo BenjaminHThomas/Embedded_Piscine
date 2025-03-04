@@ -10,7 +10,7 @@ BIN		= ex00
 CC		= avr-gcc
 OBJCOPY	= avr-objcopy
 INSTALL	= avrdude
-FLAGS	= -Wall -Werror -Wextra -O1
+FLAGS	= -Wall -Werror -Wextra
 FLAGS	+= -F_CPU=$(F_CPU) -mmcu=$(MCU)
 PORT	= /dev/ttyUSB0
 
