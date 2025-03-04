@@ -1,7 +1,7 @@
 # Board specs
 
 MCU		= atmega168p
-F_CPU	= 8000000
+F_CPU	= 16000000
 BAUD	= 115200
 
 # Compile args
