@@ -33,14 +33,14 @@ void uart_tx(char *str) {
 
 ISR(TIMER1_OVF_vect) {
 	uart_tx("Hello World!\n\r");
-	TCNT1 = 65535 - (F_CPU/1024);
+	TCNT1 = 65535 - COMPARE;
 }
 
 int main(void) {
 	uart_init(MYUBRR);
-	TCNT1 = 65535 - (F_CPU/1024); // max 16bit - 1hz with 1024 prescaler
+	TCNT1 = 65535 - COMPARE; // max 16bit - 1hz with 1024 prescaler
 	TCCR1B |= (1 << CS12) | (1 << CS10); // 1024 prescaler
-	TCCR1A = 0x00; // disable flags
+	TCCR1A = 0x00; // disable flags - no compare
 	TIMSK1 = (1 << TOIE1); // enable overflow interrupt
 
 	sei(); //set enabled interrupts
