@@ -39,7 +39,6 @@ char change_caps(char c) {
 }
 
 ISR(USART_RX_vect) {
-	while (!(UCSR0A & (1<<RXC0)));
 	char c = UDR0;
 	if (c == ENTERKEY) {
 		uart_tx('\r');
