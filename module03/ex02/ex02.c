@@ -17,14 +17,12 @@
 #define ANIM_DELAY 64
 
 void set_rgb(uint8_t r, uint8_t g, uint8_t b) {
-	// PORTD = r << 6 | g << 3 | b;
-	// PORTD = (r * 6/256) * 36 | (g*6/256) * 14 | (b * 6/256) * 6;
 	//r
-	OCR0B = r;
+	OCR0B = 255 - r;
 	//g
-	OCR0A = g;
+	OCR0A = 255 - g;
 	//b
-	OCR2B = b;
+	OCR2B = 255 - b;
 }
 
 void wheel(uint8_t pos) {
