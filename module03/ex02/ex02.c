@@ -14,7 +14,7 @@
 #define RGB_G (1 << PD6)
 #define RGB_B (1 << PD3)
 
-#define ANIM_DELAY 34
+#define ANIM_DELAY 64
 
 void set_rgb(uint8_t r, uint8_t g, uint8_t b) {
 	// PORTD = r << 6 | g << 3 | b;
@@ -41,9 +41,6 @@ void wheel(uint8_t pos) {
 }
 
 void init_rgb(void) {
-	TCCR1B |= (1 << CS12) | (1 << CS10); // presacaler 1024
-	TCCR1A |= (1 << WGM10) | (1 << WGM12); // PWM phase correct 8 bit
-
 	// OC0B red timer
 	// OC0A green timer
 	// OC2B blue timer
@@ -51,7 +48,7 @@ void init_rgb(void) {
 	// init red - timer 0
 	TCCR0A |= (1 << COM0B1) | (1 << COM0B0); // Set OC0B on compare match, clear OC0B at BOTTOM, (inverting mode)
 	TCCR0A |= (1 << WGM00); // PWM, phase correct, 255 MAX
-	TCCR0B |= (1 << CS02); // 8 bit prescaler
+	TCCR0B |= (1 << CS01); // 8 bit prescaler
 
 	// // init green
 	TCCR0A |= (1 << COM0A1) | (1 << COM0A0); // Set OC0A on compare match, clear OC0A at BOTTOM, (inverting mode)
@@ -66,7 +63,7 @@ int main(void) {
 	init_rgb();
 	DDRD |= RGB_R | RGB_G | RGB_B;
 	while (1) {
-		wheel(TCNT1);
+		wheel(TCNT0);
 		_delay_ms(ANIM_DELAY);
 	}
 	return 0;
