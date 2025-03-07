@@ -1,3 +1,8 @@
+// • You are required to write a program that changes the state of LED D1 when the
+// button SW1 is pressed.
+// • You must use interrupts to read the state of the button. Reading the PINx registers
+// is not allowed
+
 #include <avr/io.h>
 #define F_CPU 16000000
 #include <util/delay.h>
