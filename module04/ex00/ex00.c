@@ -9,6 +9,7 @@
 ISR(INT0_vect) {
 	PORTB ^= LED_1;
 	_delay_ms(200);
+	EIFR |= (1 << INTF0);
 }
 
 void init(void) {
