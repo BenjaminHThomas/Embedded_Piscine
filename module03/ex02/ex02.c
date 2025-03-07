@@ -14,7 +14,7 @@
 #define RGB_G (1 << PD6)
 #define RGB_B (1 << PD3)
 
-#define ANIM_DELAY 64
+#define ANIM_DELAY 10
 
 void set_rgb(uint8_t r, uint8_t g, uint8_t b) {
 	//r
@@ -58,10 +58,11 @@ void init_rgb(void) {
 }
 
 int main(void) {
+	uint8_t pos = 0;
 	init_rgb();
 	DDRD |= RGB_R | RGB_G | RGB_B;
 	while (1) {
-		wheel(TCNT0);
+		wheel(pos++);
 		_delay_ms(ANIM_DELAY);
 	}
 	return 0;
