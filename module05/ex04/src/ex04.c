@@ -1,6 +1,10 @@
-// Read the value of the linear potentiometer RV1 using the ADC peripheral.
-// • ADC must be configured with an 8-bit resolution and AVCC as a reference.
-// • Then display its value in hexadecimal format every 20ms on the console.
+// Read the RV1 value with your ADC.
+// • RV1 must be able to change the color of D5 with the Wheel function.
+// • Also the LEDs D1-D4 must display the value of RV1 as a digital gauge.
+// ◦ LED D1: 25%
+// ◦ LED D2: 50%
+// ◦ LED D3: 75%
+// ◦ LED D4: 100%
 
 #include "uart.h"
 #include "libft.h"
