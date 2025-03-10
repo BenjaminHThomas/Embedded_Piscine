@@ -38,13 +38,13 @@ void wheel(uint8_t pos) {
 
 void update_leds(uint8_t pos) {
 	PORTB = 0;
-	if (pos >= 51)
+	if (pos >= 63)
 		PORTB |= LED_1;
-	if (pos >= 102)
+	if (pos >= 126)
 		PORTB |= LED_2;
-	if (pos >= 153)
+	if (pos >= 189)
 		PORTB |= LED_3;
-	if (pos >= 204)
+	if (pos >= 254)
 		PORTB |= LED_4;
 }
 
