@@ -1,6 +1,6 @@
-// Read the value of the linear potentiometer RV1 using the ADC peripheral.
-// • ADC must be configured with an 8-bit resolution and AVCC as a reference.
-// • Then display its value in hexadecimal format every 20ms on the console.
+// • Read the potentiometer RV1 + the LDR (R14) + the NTC (R20)
+// • But this time, you must use the ADC in 10bit mode
+// • After that, you must display the values in decimal format every 20ms on the console
 
 #include "uart.h"
 #include "libft.h"
