@@ -10,7 +10,8 @@
 #define RTC_PIN (1 << MUX3)
 // #define TS_GAIN 0x0003
 // #define TS_OFFSET 0x0002
-#define TEMP_OFFSET 334
+// #define TEMP_OFFSET 334
+#define TEMP_RATIO 0.071022727 // 25 / 352
 
 void print_results(uint16_t temp_c) {
 	char results[5];
@@ -31,7 +32,7 @@ uint16_t get_temp(void) {
 	while ((ADCSRA & (1 << ADSC))); // wait until conversion is finished
 	// return (((((ADCH << 8) + ADCL) - (273 + 100 - TS_OFFSET)) * 128) / TS_GAIN) + 25;
 	// return ((ADCL | (ADCH << 8))) - TEMP_OFFSET;
-	return ADC - TEMP_OFFSET;
+	return ADC * TEMP_RATIO;
 }
 
 int main(void) {
