@@ -18,13 +18,21 @@
 void i2c_init(void);
 void i2c_start(void);
 void i2c_stop(void);
-void output_error(uint8_t status);
+
+void print_status(uint8_t status_code);
 
 int main(void) {
+	volatile uint8_t status;
+
 	uart_init(MYUBRR);
 	i2c_init();
 	while (1) {
 		i2c_start();
+		TWDR = AHT20_WRITE; // send slave address & write bit
+		TWCR = (1 << TWINT) | (1 << TWEN); // turn on twi
+		while (!(TWCR & (1 << TWINT))); // wait until data is sent to control register
+		status = TWSR & 0xF8; // get status from register
+		print_status(status);
 		i2c_stop();
 	}
 	return 0;
@@ -39,32 +47,100 @@ void i2c_init(void) {
 }
 
 void i2c_start(void) {
-	volatile uint8_t status;
-	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);
-	while (!(TWCR & (1 << TWINT))); // wait for response
-	status = TWSR & 0xF8; // get status from register
-	output_error(status);
-	TWDR = AHT20_WRITE; // send slave address & write bit
-	TWCR = (1 << TWINT) | (1 << TWEN);
-	while (!(TWCR & (1 << TWINT)));
-	status = TWSR & 0xF8;
-	output_error(status);
+	TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTA);
+	while (!(TWCR & (1<<TWINT)));
 }
 
 void i2c_stop(void) {
-	TWCR = (1 << TWINT) | (1 << TWSTO) | (1 << TWEN);
-	while(TWCR & (1 << TWSTO)); // wait for stop condition to be executed
+	TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
+	while(!(TWCR & (1 << TWSTO))); // wait for stop condition to be executed
 }
 
-void output_error(uint8_t status) {
-	if (status == TW_START)
-		uart_tx_str("START acknowledged.\r\n");
-	else if (status == TW_MT_SLA_ACK)
-		uart_tx_str("success\r\n");
-	else if (status == TW_MT_SLA_NACK)
-		uart_tx_str("error: address send, nack received\r\n");
-	else if (status == TW_MT_DATA_NACK)
-		uart_tx_str("error: data send, nack received\r\n");
-	else
-		uart_tx_str("error: other\r\n");
+void print_status(uint8_t status_code)
+{
+	switch (status_code) {
+		case TW_START:
+			uart_tx_str ("START acknowledge.\r\n");
+			break;
+		case TW_REP_START:
+			uart_tx_str ("REPEATED START acknowledge.\r\n");
+			break;
+		case TW_MT_SLA_ACK:
+			uart_tx_str ("Master Transmitter: Slave ACK\r\n");
+			break;
+		case TW_MT_SLA_NACK:
+			uart_tx_str ("Master Transmitter : Slave NACK\r\n");
+			break;
+		case TW_MT_DATA_ACK:
+			uart_tx_str ("Master Transmitter : Data ACK\r\n");
+			break;
+		case TW_MT_DATA_NACK:
+			uart_tx_str ("Master Transmitter: Data NACK\r\n");
+			break;
+		case TW_MR_SLA_ACK:
+			uart_tx_str ("Master Receiver : Slave ACK\r\n");
+			break;
+		case TW_MR_SLA_NACK:
+			uart_tx_str ("Master Receiver : Slave NACK\r\n");
+			break;
+		case TW_MR_DATA_ACK:
+			uart_tx_str ("Master Receiver : Data ACK\r\n");
+			break;
+		case TW_MR_DATA_NACK:
+			uart_tx_str ("Master Receiver : Data NACK\r\n");
+			break;
+		case TW_MT_ARB_LOST:
+			uart_tx_str ("Arbitration Lost\r\n");
+			break;
+		case TW_ST_SLA_ACK:
+			uart_tx_str ("Slave Transmitter : Slave ACK\r\n");
+			break;
+		case TW_ST_ARB_LOST_SLA_ACK:
+			uart_tx_str ("Arbitration Lost in SLA+R/W, Slave ACK\r\n");
+			break;
+		case TW_ST_DATA_ACK:
+			uart_tx_str ("Slave Transmitter : Data ACK\r\n");
+			break;
+		case TW_ST_DATA_NACK:
+			uart_tx_str ("Slave Transmitter : Data NACK\r\n");
+			break;
+		case TW_ST_LAST_DATA:
+			uart_tx_str ("Slave Transmitter : Last Data\r\n");
+			break;
+		case TW_SR_SLA_ACK:
+			uart_tx_str ("Slave Receiver : Slave ACK\r\n");
+			break;
+		case TW_SR_ARB_LOST_SLA_ACK:
+			uart_tx_str ("Arbitration Lost in SLA+R/W, Slave ACK\r\n");
+			break;
+		case TW_SR_GCALL_ACK:
+			uart_tx_str ("General Call : Slave ACK\r\n");
+			break;
+		case TW_SR_ARB_LOST_GCALL_ACK:
+			uart_tx_str ("Arbitration Lost in General Call, Slave ACK\r\n");
+			break;
+			case TW_SR_DATA_ACK:
+			uart_tx_str ("Slave Receiver : Data ACK\r\n");
+			break;
+		case TW_SR_DATA_NACK:
+			uart_tx_str ("Slave Receiver : Data NACK\r\n");
+			break;
+		case TW_SR_GCALL_DATA_ACK:
+			uart_tx_str ("General Call : Data ACK\r\n");
+			break;
+		case TW_SR_GCALL_DATA_NACK:
+			uart_tx_str ("General Call : Data NACK\r\n");
+			break;
+		case TW_SR_STOP:
+			uart_tx_str ("Slave Receiver : STOP received\r\n");
+			break;
+		case TW_NO_INFO:
+			uart_tx_str ("No state information available\r\n");
+			break;
+		case TW_BUS_ERROR:
+			uart_tx_str ("Bus Error\r\n");
+			break;
+		default:
+			uart_tx_str ("Unknown Status Code\r\n");
+	}
 }
