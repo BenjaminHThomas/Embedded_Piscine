@@ -14,10 +14,12 @@ void print_hex_value(char c);
 
 // void get_ath_temp(void);
 void aht20_init(void);
-// void aht20_send_full_cmd(uint8_t cmd, uint8_t param1, uint8_t param2);
+void aht20_send_full_cmd(uint8_t cmd, uint8_t param1, uint8_t param2);
 void aht20_send_cmd(uint8_t cmd);
 void aht20_read_cmd();
 void aht20_start_measure(void);
+void read_last_byte(void);
+void read_sensor(void);
 
 # define AHT20_ADDRESS 0x38
 # define AHT20_WRITE (AHT20_ADDRESS << 1) // set last bit to 0 = 0x70
