@@ -24,41 +24,58 @@ int main(void) {
 	uart_tx_str("starting main loop...\r\n");
 	aht20_start_measure();
 	while (1) {
-		i2c_start();
-		i2c_write(AHT20_READ);
-		// print_status();
-
-		i2c_read(); // state
-		// print_status();
-		i2c_read(); // humidity0
-		// print_status();
-		i2c_read(); // humidity1
-		// print_status();
-		i2c_read(); // humidity2
-		// print_status();
-		i2c_read(); // temp0
-		// print_status();
-		i2c_read(); // temp1
-		// print_status();
-		i2c_read(); // crc
-		// print_status();
-		
-		i2c_stop();
-		uart_tx_str("\r\n");
-		_delay_ms(100);
+		read_sensor();
+		_delay_ms(80);
 	}
 	return 0;
 }
 
 void aht20_init(void) {
 	_delay_ms(40);
-	aht20_send_cmd(AHT20_INIT); // init
+	// aht20_send_cmd(AHT20_INIT); // init
+
+	i2c_start();
+	i2c_write(AHT20_WRITE);
+	i2c_write(AHT20_INIT);
+	i2c_write(0x08);
+	i2c_write(0x00);
+	i2c_stop();
+
 	_delay_ms(10);
 }
 
 void aht20_start_measure(void) {
-	aht20_send_cmd(AHT20_TRIG_MES);
+	// aht20_send_cmd(AHT20_TRIG_MES); // init
+	i2c_start();
+	i2c_write(AHT20_WRITE);
+	i2c_write(AHT20_TRIG_MES);
+	i2c_write(0x33);
+	i2c_write(0x00);
+	i2c_stop();
 	_delay_ms(80);
+}
+
+void read_sensor(void) {
+	i2c_start();
+	i2c_write(AHT20_READ);
+	// print_status();
+
+	i2c_read(); // state
+		// print_status();
+	i2c_read(); // humidity0
+		// print_status();
+	i2c_read(); // humidity1
+		// print_status();
+	i2c_read(); // humidity2
+		// print_status();
+	i2c_read(); // temp0
+		// print_status();
+	i2c_read(); // temp1
+		// print_status();
+	read_last_byte(); // crc
+		// print_status();
+	i2c_stop();
+	uart_tx_str("\r\n");
 }
 
 // void ath20_send_full_cmd(uint8_t cmd, uint8_t param1, uint8_t param2) {
@@ -91,7 +108,15 @@ void i2c_write(unsigned char data) {
 }
 
 void i2c_read(void) {
-	TWCR = (1 << TWINT) | (1 << TWEA) | (1 << TWEN); 
+	TWCR = (1 << TWINT) | (1 << TWEA) | (1 << TWEN); // send ack
+	while (!(TWCR & (1 << TWINT)));
+	volatile uint8_t result = TWDR;
+	print_hex_value(result);
+	uart_tx_str(" ");
+}
+
+void read_last_byte(void) {
+	TWCR = (1 << TWINT) | (0 << TWEA) | (1 << TWEN); // send nack
 	while (!(TWCR & (1 << TWINT)));
 	volatile char result = TWDR;
 	print_hex_value(result);
@@ -101,10 +126,10 @@ void i2c_read(void) {
 void print_hex_value(char c) {
 	unsigned char uc = (unsigned char)c;
 
-	if (c < 0) {
-		uart_tx('-');
-		uc = (unsigned char)(-c);
-	}
+	// if (c < 0) {
+	// 	uart_tx('-');
+	// 	uc = (unsigned char)(-c);
+	// }
 	if (uc < 16) {
 		uart_tx(HEX[uc]);
 		return ;
