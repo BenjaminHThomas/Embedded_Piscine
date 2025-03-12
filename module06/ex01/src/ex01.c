@@ -22,10 +22,10 @@ int main(void) {
 	uart_tx_str("init aht20...\r\n");
 	aht20_init();
 	uart_tx_str("starting main loop...\r\n");
-	aht20_start_measure();
 	while (1) {
+		aht20_start_measure();
 		read_sensor();
-		_delay_ms(80);
+		_delay_ms(45);
 	}
 	return 0;
 }
