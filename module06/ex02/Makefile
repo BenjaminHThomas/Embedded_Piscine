@@ -13,6 +13,7 @@ OBJCOPY	= avr-objcopy
 INSTALL	= avrdude
 FLAGS	= -Wall -Werror -Wextra -O3
 FLAGS	+= -DF_CPU=$(F_CPU) -mmcu=$(MCU)
+FLAGS	+= -Wl,-u,vfprintf -lprintf_flt -lm
 INCS	= -I ./include
 PORT	= /dev/ttyUSB0
 
