@@ -39,7 +39,7 @@ void print_address(uint16_t pos) {
 
 void print_eeprom(void) {
 	unsigned char mem;
-	for (uint32_t i = 0; i <= 1024;) {
+	for (uint32_t i = 0; i <= 1008;) { // 1008 + 16 = 1024 == 1kb
 		print_address(i);
 		for (uint8_t byte = 0; byte < 16; byte += 2) {
 			for (uint8_t x = 0; x < 2; x++) {
