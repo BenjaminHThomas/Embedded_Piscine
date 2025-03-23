@@ -1,6 +1,8 @@
 // Write a program that displays the status of the entire EEPROM on the UART in
 // hexdump format.
 
+// This exercise in unfinished
+
 #include "uart.h"
 #include "eeprom.h"
 #include "utils.h"
